@@ -1,0 +1,1 @@
+SUBSYSTEMS=="xen", KERNEL=="eth*", ACTION=="add", RUN+="/bin/systemctl --no-block qubes-tor.service"
