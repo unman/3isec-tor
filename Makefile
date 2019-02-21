@@ -38,36 +38,36 @@ rpms: rpms-vm
 rpms-dom0:
 
 rpms-vm:
-	rpmbuild --define "_rpmdir rpm/" -bb rpm_spec/qubes-tor.spec
-	rpm --addsign rpm/x86_64/qubes-tor-*$(VERSION)*.rpm
+	rpmbuild --define "_rpmdir rpm/" -bb rpm_spec/3isec-tor.spec
+	rpm --addsign rpm/x86_64/3isec-tor-*$(VERSION)*.rpm
 
 clean:
 
 update-repo-current:
 	for vmrepo in ../yum/current-release/current/vm/* ; do \
 		dist=$$(basename $$vmrepo) ;\
-		ln -f $(RPMS_DIR)/x86_64/qubes-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
+		ln -f $(RPMS_DIR)/x86_64/3isec-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
 	done
 
 update-repo-current-testing:
 	for vmrepo in ../yum/current-release/current-testing/vm/* ; do \
 		dist=$$(basename $$vmrepo) ;\
-		ln -f $(RPMS_DIR)/x86_64/qubes-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
+		ln -f $(RPMS_DIR)/x86_64/3isec-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
 	done
 
 update-repo-unstable:
 	for vmrepo in ../yum/current-release/unstable/vm/* ; do \
 		dist=$$(basename $$vmrepo) ;\
-		ln -f $(RPMS_DIR)/x86_64/qubes-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
+		ln -f $(RPMS_DIR)/x86_64/3isec-tor-*$(VERSION)*$$dist*.rpm $$vmrepo/rpm/ ;\
 	done
 
 install-common:
-	install -D start_tor_proxy.sh $(DESTDIR)/usr/lib/qubes-tor/start_tor_proxy.sh
-	install -D torrc.tpl $(DESTDIR)/usr/lib/qubes-tor/torrc.tpl
-	install -D torrc $(DESTDIR)/usr/lib/qubes-tor/torrc
-	install -D README.md $(DESTDIR)/usr/lib/qubes-tor/README
-	install -D 99-qubes-tor-hook.rules $(DESTDIR)/etc/udev/rules.d/99-qubes-tor-hook.rules
-	install -D qubes-tor.service $(DESTDIR)/lib/systemd/system/qubes-tor.service 
+	install -D start_tor_proxy.sh $(DESTDIR)/usr/lib/3isec-tor/start_tor_proxy.sh
+	install -D torrc.tpl $(DESTDIR)/usr/lib/3isec-tor/torrc.tpl
+	install -D torrc $(DESTDIR)/usr/lib/3isec-tor/torrc
+	install -D README.md $(DESTDIR)/usr/lib/3isec-tor/README
+	install -D 99-3isec-tor-hook.rules $(DESTDIR)/etc/udev/rules.d/99-3isec-tor-hook.rules
+	install -D 3isec-tor.service $(DESTDIR)/lib/systemd/system/3isec-tor.service 
 
 install-rh: install-common
 	install -D torproject.repo $(DESTDIR)/etc/yum.repos.d/torproject.repo
@@ -75,4 +75,4 @@ install-rh: install-common
 
 install-deb: install-common
 	install -D torproject.list $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
-	install -D torprojectarchive.asc $(DESTDIR)/usr/lib/qubes-tor/torprojectarchive.asc
+	install -D torprojectarchive.asc $(DESTDIR)/usr/lib/3isec-tor/torprojectarchive.asc
