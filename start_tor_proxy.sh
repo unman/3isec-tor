@@ -19,26 +19,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-# run only if 3isec-tor service enabled
+# run only if qubes-tor service enabled
 [ -r /var/run/qubes-service/3isec-tor ] || exit 0
 
-# Qubes R3
-if type qubesdb-read > /dev/null 2>&1; then
-    QUBESDB=qubesdb
-    PREFIX='/'
-
-# Qubes R2
-else
-    QUBESDB=xenstore
-    PREFIX=''
-fi
-
 # defaults torrc variables - overridable by user
-QUBES_IP=$(${QUBESDB}-read ${PREFIX}qubes-ip)
+QUBES_IP=$(qubesdb-read /qubes-ip)
 TOR_TRANS_PORT=9040 # maximum circuit isolation
 TOR_SOCKS_PORT=9050 # less circuit isolation
 TOR_SOCKS_ISOLATED_PORT=9049 # maximum circuit isolation
-TOR_CONTROL_PORT=0 # 0 = disabled
+TOR_CONTROL_PORT=9051 # 0 = disabled
 VIRTUAL_ADDR_NET=172.16.0.0/12
 DATA_DIRECTORY=/rw/usrlocal/lib/3isec-tor
 RUNDIR=/var/run/tor
@@ -72,16 +61,13 @@ function setup_firewall
     /sbin/iptables -F
     /sbin/iptables -P INPUT DROP
     /sbin/iptables -P FORWARD DROP
-    /sbin/iptables -P OUTPUT ACCEPT
+    /sbin/iptables -P OUTPUT DROP
     /sbin/iptables -A INPUT -i vif+ -p udp -m udp --dport 53 -j ACCEPT
     /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_TRANS_PORT -j ACCEPT
     /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_PORT -j ACCEPT
     /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_ISOLATED_PORT -j ACCEPT
-    if [ "$TOR_CONTROL_PORT" != "0" ]; then
-        /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_CONTROL_PORT -j ACCEPT
-    fi
     /sbin/iptables -A INPUT -i vif+ -p udp -m udp -j DROP
-    /sbin/iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    /sbin/iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
     /sbin/iptables -A INPUT -i lo -j ACCEPT
     /sbin/iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
 
@@ -95,6 +81,9 @@ function setup_firewall
     #/sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,RST ACK,RST -j LOG --log-prefix "Transproxy leak blocked: " --log-uid
     /sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,FIN ACK,FIN -j DROP
     /sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,RST ACK,RST -j DROP
+    /sbin/iptables -A OUTPUT -m tcp -p tcp -m owner --uid-owner $TOR_USER -j ACCEPT
+    /sbin/iptables -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
+    /sbin/iptables -A OUTPUT  -o lo -j ACCEPT
 
     # nat rules
     /sbin/iptables -t nat -F
