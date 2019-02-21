@@ -3,6 +3,8 @@
   * Renamed package to 3isec-tor
   * Renamed qubes service to 3isec-tor
   * Added Conflicts with qubes-tor
+  * Changed iptables rules to restrict all outbound traffic to Tor.
+  * Changed iptables rules to deny forwarding.
 
  -- unman <unman@thirdeyesecurity.org>  Thu, 21 Feb 2019 15:12:42 +0000
 
