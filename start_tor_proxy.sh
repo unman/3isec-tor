@@ -19,8 +19,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-# run only if qubes-tor service enabled
-[ -r /var/run/qubes-service/qubes-tor ] || exit 0
+# run only if 3isec-tor service enabled
+[ -r /var/run/qubes-service/3isec-tor ] || exit 0
 
 # Qubes R3
 if type qubesdb-read > /dev/null 2>&1; then
@@ -40,17 +40,17 @@ TOR_SOCKS_PORT=9050 # less circuit isolation
 TOR_SOCKS_ISOLATED_PORT=9049 # maximum circuit isolation
 TOR_CONTROL_PORT=0 # 0 = disabled
 VIRTUAL_ADDR_NET=172.16.0.0/12
-DATA_DIRECTORY=/rw/usrlocal/lib/qubes-tor
+DATA_DIRECTORY=/rw/usrlocal/lib/3isec-tor
 RUNDIR=/var/run/tor
 TOR_USER=`id -u -n _tor 2>/dev/null || id -u -n toranon 2>/dev/null || id -u -n debian-tor 2>/dev/null || echo root`
 
 VARS="QUBES_IP TOR_TRANS_PORT TOR_SOCKS_PORT TOR_SOCKS_ISOLATED_PORT TOR_CONTROL_PORT VIRTUAL_ADDR_NET DATA_DIRECTORY"
 
 # command line arguments - not overrideable
-DEFAULT_RC=/usr/lib/qubes-tor/torrc
-DEFAULT_RC_TEMPLATE=/usr/lib/qubes-tor/torrc.tpl
-USER_RC=/rw/config/qubes-tor/torrc
-PID=$RUNDIR/qubes-tor.pid
+DEFAULT_RC=/usr/lib/3isec-tor/torrc
+DEFAULT_RC_TEMPLATE=/usr/lib/3isec-tor/torrc.tpl
+USER_RC=/rw/config/3isec-tor/torrc
+PID=$RUNDIR/3isec-tor.pid
 
 kill `cat "$PID"` &> /dev/null
 
@@ -121,7 +121,7 @@ function setup_firewall
 # function to print error and setup firewall rules to prevent traffic leaks
 function exit_error()
 {
-    echo "qubes-tor: $1" 1>&2
+    echo "3isec-tor: $1" 1>&2
     setup_firewall
     exit 1
 }

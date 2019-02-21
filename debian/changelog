@@ -1,57 +1,12 @@
-qubes-tor (0.1.14-1) wheezy; urgency=medium
+3isec-tor (0.1.1-1) stretch; urgency=medium
 
-  * Update Tor Project package signing key
+  * Renamed package to 3isec-tor
+  * Renamed qubes service to 3isec-tor
 
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 07 Dec 2015 19:56:22 +0100
+ -- unman <unman@thirdeyesecurity.org>  Thu, 21 Feb 2019 15:12:42 +0000
 
-qubes-tor (0.1.13-1) wheezy; urgency=medium
+3isec-tor (0.1.0-1) stretch; urgency=medium
 
-  * Fix user torrc path in documentation
+  * Fork from QubesOS/app-linux-tor d32a73f 
 
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 28 Nov 2015 15:28:11 +0100
-
-qubes-tor (0.1.12-1) wheezy; urgency=medium
-
-  * Start qubes-tor service after mounting /rw
-
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 08 Oct 2015 03:29:47 +0200
-
-qubes-tor (0.1.11-1) wheezy; urgency=medium
-
-  [ Patrick Schleizer ]
-  * Update README.md Acknowledgements
-
-  [ Marek Marczykowski-Górecki ]
-  * gitignore pkgs
-  * Do not require 'which' installed, use 'type' shell built-in
-
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 01 Jul 2015 07:21:22 +0200
-
-qubes-tor (0.1.10-1) wheezy; urgency=medium
-
-  [ Abel Luck ]
-  * README: change fedora 18 references to 20 and fix numbering
-  * reduce default stream isolation settings
-  * kernel bug workaround to prevent leaking packets
-  * convert tabs to spaces
-
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 04 May 2015 02:25:48 +0200
-
-qubes-tor (0.1.9-1) wheezy; urgency=medium
-
-  [ Jason Mehring ]
-  * debian: Change start_tor_proxy.sh to use bash, not sh sinne it
-    contains bashisms
-  * R3: Add support for Release 3 (qubesdb)
-  * debian: Added qubes-tor Debian packaging
-
-  [ Marek Marczykowski-Górecki ]
-  * debian: Use DEBIAN_PARSER provided by builder
-
- -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 27 Mar 2015 00:34:45 +0100
-
-qubes-tor (0.1.8-1) unstable; urgency=low
-
-  * Initial Release.
-
- -- Jason Mehring <nrgaway@gmail.com>  Tue, 25 Feb 2015 00:00:00 +0000
+ -- unman <unman@thirdeyesecurity.org>  Thu, 21 Feb 2019 15:06:22 +0000

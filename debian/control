@@ -1,13 +1,13 @@
-Source: qubes-tor
+Source: 3isec-tor
 Section: admin
 Priority: extra
-Maintainer: Jason Mehring <nrgaway@gmail.com>
+Maintainer: unman <unman@thirdeyesecurity.org>
 Build-Depends: debhelper (>= 9~), quilt, dh-systemd (>= 1.5)
 Standards-Version: 3.9.5
 Homepage: http://www.qubes-os.org
 
-Package: qubes-tor
+Package: 3isec-tor
 Section: admin
 Architecture: any
 Depends: systemd, tor (>= 0.2.3), ${misc:Depends}
-Description: The Qubes package for running a TorVM
+Description: A package for running a TorVM in Qubes
