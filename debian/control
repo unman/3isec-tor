@@ -10,4 +10,5 @@ Package: 3isec-tor
 Section: admin
 Architecture: any
 Depends: systemd, tor (>= 0.2.3), ${misc:Depends}
+Conflicts: qubes-tor
 Description: A package for running a TorVM in Qubes

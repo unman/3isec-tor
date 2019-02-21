@@ -2,6 +2,7 @@
 
   * Renamed package to 3isec-tor
   * Renamed qubes service to 3isec-tor
+  * Added Conflicts with qubes-tor
 
  -- unman <unman@thirdeyesecurity.org>  Thu, 21 Feb 2019 15:12:42 +0000
 
