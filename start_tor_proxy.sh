@@ -97,6 +97,7 @@ function setup_firewall
     /sbin/iptables -t nat -A PREROUTING -i vif+ -p tcp -j DNAT --to-destination $QUBES_IP:$TOR_TRANS_PORT
 
     # completely disable ipv6
+if [ -f /proc/net/if_inet6 ]; then
     /sbin/ip6tables -P INPUT DROP
     /sbin/ip6tables -P OUTPUT DROP
     /sbin/ip6tables -P FORWARD DROP
@@ -105,6 +106,7 @@ function setup_firewall
     for iface in `ls /proc/sys/net/ipv6/conf/vif*/disable_ipv6 2> /dev/null`; do
         echo "1" > $iface
     done
+fi
 }
 
 # function to print error and setup firewall rules to prevent traffic leaks

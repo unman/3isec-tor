@@ -1,3 +1,9 @@
+3isec-tor (0.1.2-1) stretch; urgency=medium
+
+  * Fixed problem applying iptables rules if ip6 not enabled.
+
+ -- unman <unman@thirdeyesecurity.org>  Thu, 21 Feb 2019 16:57:23 +0000
+
 3isec-tor (0.1.1-1) stretch; urgency=medium
 
   * Renamed package to 3isec-tor
