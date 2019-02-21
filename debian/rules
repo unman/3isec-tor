@@ -7,14 +7,14 @@
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-export DESTDIR=$(shell readlink -m .)/debian/qubes-tor
+export DESTDIR=$(shell readlink -m .)/debian/3isec-tor
 
 %:
 	dh $@ --with systemd
 
 override_dh_auto_install:
 	make install-deb
-	sed -i "s/jessie/$(DIST)/" $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
+	sed -i "s/stretch/$(DIST)/" $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
 
 override_dh_systemd_start:
 	dh_systemd_start --no-restart-on-upgrade
