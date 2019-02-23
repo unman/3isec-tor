@@ -1,3 +1,9 @@
+3isec-tor (0.1.5-1) stretch; urgency=medium
+
+  * Use TLS for Tor repository
+
+ -- unman <unman@thirdeyesecurity.org>  Sat, 23 Feb 2019 11:56:55 +0000
+
 3isec-tor (0.1.4-1) stretch; urgency=medium
 
   * Updated torprojectarchive signing key
