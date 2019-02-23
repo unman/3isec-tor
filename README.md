@@ -1,14 +1,13 @@
-Qubes TorVM (qubes-tor)
+TorVM (3isec-tor)
 ==========================
 
-Qubes TorVM is a ProxyVM service that provides torified networking to all its
+TorVM is a ProxyVM service that provides torified networking to all its
 clients.
 
-By default, any AppVM using the TorVM as its NetVM will be fully torified, so
-even applications that are not Tor aware will be unable to access the outside
-network directly.
+By default, any qube using the TorVM as its NetVM will be fully torified, so
+that even applications that are not Tor aware  will be forced to use Tor.
 
-Moreover, AppVMs running behind a TorVM are not able to access globally
+Moreover, qubes running behind a TorVM are not able to access globally
 identifying information (IP address and MAC address).
 
 Due to the nature of the Tor network, only IPv4 TCP and DNS traffic is allowed.
@@ -18,17 +17,24 @@ See [this article](http://theinvisiblethings.blogspot.com/2011/09/playing-with-q
 
 ## Warning + Disclaimer
 
-1. Qubes TorVM is produced independently from the Tor(R) anonymity software and
+1. TorVM is produced independently from the Tor(R) anonymity software and
    carries no guarantee from The Tor Project about quality, suitability or
    anything else.
 
-2. Qubes TorVM is not a magic anonymizing solution. Protecting your identity
+2. TorVM is not a magic anonymizing solution. Protecting your identity
    requires a change in behavior. Read the "Protecting Anonymity" section
    below.
 
-3. Traffic originating from the TorVM itself **IS NOT** routed through Tor.
-   This includes system updates to the TorVM. Only traffic from VMs using TorVM
-   as their NetVM is torified.
+3. NO traffic originating from the TorVM is allowed, except traffic running
+   under the Tor user. NO traffic is forwarded through the TorVM.
+
+4. A TorVM using 3isec-tor does not provide a firewall. If you want to use
+   the Qubes firewall then make torvm its netvm.
+   You **must** use 3isec-fw on the firewall. The Qubes firewall uses
+   MASQUERADE, so that all attached qubes will appear to use the same
+   IP address, and will thus share circuits. This is almost certainly
+   not what you want.
+  
 
 Installation
 ============
@@ -36,54 +42,59 @@ Installation
 
 0. *(Optional)* If you want to use a separate vm template for your TorVM
 
-        qvm-clone fedora-20-x64 fedora-20-x64-net
+        qvm-clone debian-9 deb9-tor
 
-1. In dom0, create a proxy vm and disable unnecessary services and enable qubes-tor
+1. In dom0, create a proxy vm, disable unnecessary services, and enable 3isec-tor
 
 
-        qvm-create -p torvm
+        qvm-create -p torvm -l red
         qvm-service torvm -d qubes-netwatcher
         qvm-service torvm -d qubes-firewall
-        qvm-service torvm -e qubes-tor
+        qvm-service torvm -e 3isec-tor
           
         # if you  created a new template in the previous step
-        qvm-prefs torvm -s template fedora-20-x64-net
+        qvm-prefs torvm template deb9-tor
 
-2. From your template vm, install the torproject Fedora repo
+2. Set prefs of torvm to use your default netvm or firewallvm as its NetVM
 
-        sudo yum install qubes-tor-repo
+3. In the template, add the 3isec repositories:
 
-3. Then, in the template, install the TorVM init scripts
+        sudo echo "deb https://qubes.3isec.org/4.0 stretch main
 
-        sudo yum install qubes-tor
+4. In the template, install the 3isec-tor package
 
-5. Configure an AppVM to use TorVM as its netvm (example a vm named anon-web)
+        sudo apt install 3isec-tor
 
-        qvm-prefs -s anon-web netvm torvm
-	... repeat for other appvms ...
+5. Shutdown the template.
 
-6. Shutdown templateVM.
-7. Set prefs of torvm to use your default netvm or firewallvm as its NetVM
-8. Start the TorVM and any AppVM you have configured
-9. From the AppVM, verify torified connectivity
+6. Configure a qube to use torvm as its netvm (e.g using a qube named anon-web)
 
-        curl https://check.torproject.org
+        qvm-prefs anon-web netvm torvm
+        ... repeat for other qubes ...
+
+7. Start torvm and any qube configured to use it.
+
+8. From the qube, verify torified connectivity
+
+        w3m https://check.torproject.org
 
 
 ### Troubleshooting ###
 
 
-1. Check if the qubes-tor service is running (on the torvm)
+1. Check if the 3isec-tor service is running (in the torvm)
 
-        [user@torvm] $ sudo service qubes-tor status
+        [user@torvm] $ sudo systemctl status 3isec-tor
 
 2. Tor logs to syslog, so to view messages use
 
         [user@torvm] $ sudo grep Tor /var/log/messages
 
-3. Restart the qubes-tor service (and repeat 1-2)
+3. Open arm, and look at messages and circuits
 
-        [user@torvm] $ sudo service qubes-tor restart
+4. Restart the 3isec-tor service (and repeat 1-2)
+
+        [user@torvm] $ sudo systemctl restart 3isec-tor
 
 Usage
 =====
@@ -101,7 +112,7 @@ The TorVM only purports to prevent the leaking of two identifiers:
 This is accomplished through transparent TCP and transparent DNS proxying by
 the TorVM.
 
-The TorVM cannot anonymize information stored or transmitted from your AppVMs
+The TorVM cannot anonymize information stored or transmitted from your qubes
 behind the TorVM. 
 
 *Non-comprehensive* list of identifiers TorVM does not protect:
@@ -121,7 +132,7 @@ behind the TorVM.
 
 ## Performance
 
-In order to mitigate identity correlation TorVM makes use of Tor's new [stream
+In order to mitigate identity correlation TorVM makes use of Tor's [stream
 isolation feature][stream-isolation]. Read "Threat Model" below for more
 information.
 
@@ -138,9 +149,9 @@ For these reasons TorVM ships with two open SOCKS5 ports that provide Tor
 access with different stream isolation settings:
 
 * Port 9050 - Isolates by SOCKS Auth and client address only  
-              Each AppVM gets its own circuit, and each app using a unique SOCKS
+              Each qube gets its own circuit, and each app using a unique SOCKS
               user/pass gets its own circuit
-* Port 9049 - Isolates client + estination port, address, and by SOCKS Auth
+* Port 9049 - Isolates client + destination port, address, and by SOCKS Auth
               Same as default settings listed above, but additionally traffic
               is isolated based on destination port and destination address.
 
@@ -150,12 +161,12 @@ access with different stream isolation settings:
 Default tor settings are found in the following file and are the same across
 all TorVMs.
 
-      /usr/lib/qubes-tor/torrc
+      /usr/lib/3isec-tor/torrc
 
 You can override these settings in your TorVM, or provide your own custom
 settings by appending them to:
 
-      /rw/config/qubes-tor/torrc
+      /rw/config/3isec-tor/torrc
 
 For information on tor configuration settings `man tor`
 
@@ -169,7 +180,7 @@ not, by itself, have the same security and privacy requirements.
 
 The primary security requirement of TorVM is *Proxy Obedience*.
 
-Client AppVMs MUST NOT bypass the Tor network and access the local physical
+Client qubes MUST NOT bypass the Tor network and access the local physical
 network, internal Qubes network, or the external physical network.
 
 Proxy Obedience is assured through the following:
@@ -185,7 +196,7 @@ TorVM SHOULD prevent identity correlation among network services.
 
 Without stream isolation, all traffic from different activities or "identities"
 in different applications (e.g., web browser, IRC, email) end up being routed
-through the same tor circuit. An adversary could correlate this activity to a
+through the same Tor circuit. An adversary could correlate this activity to a
 single pseudonym.
 
 TorVM uses the default stream isolation settings for transparently torified
@@ -195,35 +206,30 @@ anonymity (see [this tor-talk thread][stream-isolation-explained])
 
 By default TorVM does not use the most paranoid stream isolation settings for
 transparently torified traffic due to performance concerns. By default TorVM
-ensures that each AppVM will use a separate tor circuit (`IsolateClientAddr`).
+ensures that each qube will use a separate Tor circuit (`IsolateClientAddr`).
 
-For more paranoid use cases the SOCKS proxy port 9049 is provided that has all
+For more paranoid use cases the SOCKS proxy port 9049 is provided: this has all
 stream isolation options enabled. User applications will require manual
 configuration to use this socks port.
 
 
 Future Work
 ===========
-* Integrate Vidalia
-* Create Tor Browser packages w/out bundled tor
 * Use local DNS cache to speedup queries (pdnsd)
 * Support arbitrary [DNS queries][dns]
 * Fix Tor's openssl complaint
 * Support custom firewall rules (to support running a relay)
 
-Acknowledgements
+Acknowledgments
 ================
 
-Qubes TorVM is inspired by much of the previous work done in this area of
-transparent torified solutions. Notably the following:
-
-* [Patrick Schleizer](mailto:adrelanos@riseup.net) for his work on [Whonix](https://www.whonix.org)
-* The [Tor Project wiki](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO)
-* And the many people who contributed to discussions on [tor-talk](https://lists.torproject.org/pipermail/tor-talk/)
+3isec-tor has been forked from the defunct [Qubes TorVM project][qubestor]
+All credit to the contributors to that project.
 
 [stream-isolation]: https://gitweb.torproject.org/torspec.git/blob/HEAD:/proposals/171-separate-streams.txt
 [stream-isolation-explained]: https://lists.torproject.org/pipermail/tor-talk/2012-May/024403.html
 [tor-threats]: https://www.torproject.org/projects/torbrowser/design/#adversary
-[qubes-net]: http://wiki.qubes-os.org/trac/wiki/QubesNet
+[qubes-net]: https://theinvisiblethings.blogsplot.com/2011/09/playing-with-qubes-networking-for-fun.html
 [dns]: https://tails.boum.org/todo/support_arbitrary_dns_queries/
+[qubestor]: https://github.com/QubesOS/qubes-app-linux-tor
 
