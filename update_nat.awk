@@ -4,8 +4,10 @@
   nextfile
 }}
 {{sub(/priority 0/,"priority -200" )}}
-/10.139.1.1/{next}
+/tcp dport domain/{next}
+{{sub(/.*10.*udp dport domain/,"udp dport domain" )}}
 /icmp accept/{next}
+/admin-prohibited/{next}
 {{sub(/hook forward/,"hook prerouting")}}
 {{sub(/established,related/,"established")}}
 {{sub(/established,related/,"established")}}

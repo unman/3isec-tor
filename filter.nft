@@ -1,4 +1,5 @@
 flush table ip filter
+flush table ip6 filter
 
 table ip filter {
 	chain INPUT {
@@ -22,6 +23,25 @@ table ip filter {
 		oifname != "lo" ip saddr != 127.0.0.1 ip daddr != 127.0.0.1 tcp flags & (rst | ack) == rst | ack drop
 		meta l4proto tcp skuid "debian-tor" accept
 		ct state established accept
+		oifname "lo" accept
+	}
+
+	chain QBS-FORWARD {
+	}
+}
+
+table ip6 filter {
+	chain INPUT {
+		type filter hook input priority 0; policy drop;
+		iifname "lo" accept
+	}
+
+	chain FORWARD {
+		type filter hook forward priority 0; policy drop;
+	}
+
+	chain OUTPUT {
+		type filter hook output priority 0; policy drop;
 		oifname "lo" accept
 	}
 

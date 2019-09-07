@@ -36,8 +36,9 @@ TOR_USER=`id -u -n _tor 2>/dev/null || id -u -n toranon 2>/dev/null || id -u -n 
 VARS="QUBES_IP TOR_TRANS_PORT TOR_SOCKS_PORT TOR_SOCKS_ISOLATED_PORT TOR_CONTROL_PORT VIRTUAL_ADDR_NET DATA_DIRECTORY"
 
 # command line arguments - not overrideable
-DEFAULT_RC=/usr/lib/3isec-tor/torrc
-DEFAULT_RC_TEMPLATE=/usr/lib/3isec-tor/torrc.tpl
+DEFAULT_DIR=/usr/lib/3isec-tor
+DEFAULT_RC=$DEFAULT_DIR/torrc
+DEFAULT_RC_TEMPLATE=$DEFAULT_DIR/torrc.tpl
 USER_RC=/rw/config/3isec-tor/torrc
 PID=$RUNDIR/3isec-tor.pid
 
@@ -58,55 +59,14 @@ function replace_vars()
 function setup_firewall
 {
     echo "0" > /proc/sys/net/ipv4/ip_forward
-    /sbin/iptables -F
-    /sbin/iptables -P INPUT DROP
-    /sbin/iptables -P FORWARD DROP
-    /sbin/iptables -P OUTPUT DROP
-    /sbin/iptables -A INPUT -i vif+ -p udp -m udp --dport 53 -j ACCEPT
-    /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_TRANS_PORT -j ACCEPT
-    /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_PORT -j ACCEPT
-    /sbin/iptables -A INPUT -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_ISOLATED_PORT -j ACCEPT
-    /sbin/iptables -A INPUT -i vif+ -p udp -m udp -j DROP
-    /sbin/iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
-    /sbin/iptables -A INPUT -i lo -j ACCEPT
-    /sbin/iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
-
-    # prevent kernel bug transproxy leak
-    # https://lists.torproject.org/pipermail/tor-talk/2014-March/032507.html
-    #/sbin/iptables -A OUTPUT -m conntrack --ctstate INVALID -j LOG --log-prefix "Transproxy ctstate leak blocked: " --log-uid
-    /sbin/iptables -A OUTPUT -m conntrack --ctstate INVALID -j DROP
-    #/sbin/iptables -A OUTPUT -m state --state INVALID -j LOG --log-prefix "Transproxy state leak blocked: " --log-uid
-    /sbin/iptables -A OUTPUT -m state --state INVALID -j DROP
-    #/sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,FIN ACK,FIN -j LOG --log-prefix "Transproxy leak blocked: " --log-uid
-    #/sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,RST ACK,RST -j LOG --log-prefix "Transproxy leak blocked: " --log-uid
-    /sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,FIN ACK,FIN -j DROP
-    /sbin/iptables -A OUTPUT ! -o lo ! -d 127.0.0.1 ! -s 127.0.0.1 -p tcp -m tcp --tcp-flags ACK,RST ACK,RST -j DROP
-    /sbin/iptables -A OUTPUT -m tcp -p tcp -m owner --uid-owner $TOR_USER -j ACCEPT
-    /sbin/iptables -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
-    /sbin/iptables -A OUTPUT  -o lo -j ACCEPT
-
-    # nat rules
-    /sbin/iptables -t nat -F
-    /sbin/iptables -t nat -P PREROUTING ACCEPT
-    /sbin/iptables -t nat -P INPUT ACCEPT
-    /sbin/iptables -t nat -P OUTPUT ACCEPT
-    /sbin/iptables -t nat -P POSTROUTING ACCEPT
-    /sbin/iptables -t nat -A PREROUTING -i vif+ -p udp -m udp --dport 53 -j DNAT --to-destination $QUBES_IP:53
-    /sbin/iptables -t nat -A PREROUTING -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_ISOLATED_PORT -j DNAT --to-destination $QUBES_IP:$TOR_SOCKS_ISOLATED_PORT
-    /sbin/iptables -t nat -A PREROUTING -i vif+ -p tcp -m tcp --dport $TOR_SOCKS_PORT -j DNAT --to-destination $QUBES_IP:$TOR_SOCKS_PORT
-    /sbin/iptables -t nat -A PREROUTING -i vif+ -p tcp -j DNAT --to-destination $QUBES_IP:$TOR_TRANS_PORT
-
     # completely disable ipv6
 if [ -f /proc/net/if_inet6 ]; then
-    /sbin/ip6tables -P INPUT DROP
-    /sbin/ip6tables -P OUTPUT DROP
-    /sbin/ip6tables -P FORWARD DROP
-    /sbin/ip6tables -F
-
     for iface in `ls /proc/sys/net/ipv6/conf/vif*/disable_ipv6 2> /dev/null`; do
         echo "1" > $iface
     done
 fi
+    nft -f $DEFAULT_DIR/nft/filter.nft
+
 }
 
 # function to print error and setup firewall rules to prevent traffic leaks
@@ -163,5 +123,4 @@ fi
 
 # if we get here tor is running
 setup_firewall
-
-
+nft -f $DEFAULT_DIR/nft/nat.nft
