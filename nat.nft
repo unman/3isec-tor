@@ -26,4 +26,10 @@ table ip nat {
 
 	chain PR-QBS-SERVICES {
 	}
+
+	chain forward {
+		type filter hook prerouting priority -200; policy drop;
+		ct state established accept
+		iifname != "vif*" accept
+	}
 }
