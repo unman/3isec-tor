@@ -28,12 +28,13 @@ See [this article](http://theinvisiblethings.blogspot.com/2011/09/playing-with-q
 3. NO traffic originating from the TorVM is allowed, except traffic running
    under the Tor user. NO traffic is forwarded through the TorVM.
 
-4. A TorVM using 3isec-tor does not provide a firewall. If you want to use
-   the Qubes firewall then make torvm its netvm.
-   You **must** use 3isec-fw on the firewall. The Qubes firewall uses
-   MASQUERADE, so that all attached qubes will appear to use the same
-   IP address, and will thus share circuits. This is almost certainly
-   not what you want.
+4. TorVM is integrated with the Qubes firewall.
+   Changes in the Qubes firewall are propogated to a filter on the PREROUTING hook.
+   The natural way to do this would have been using qubes-firewall-user-script, but in 4.0 this script only runs at qube start.
+   The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 30 secs.
+   DNS from clients is allowed by default, and passed through Tor. ICMP is blocked.
+   N.B Unlike the normal Qubes Firewall, existing connections *will* be dropped when firewall changes are made.
+     There may be a delay of up to 30 s before the changes are given effect.
   
 
 Installation
@@ -42,7 +43,7 @@ Installation
 
 0. *(Optional)* If you want to use a separate vm template for your TorVM
 
-        qvm-clone debian-9 deb9-tor
+        qvm-clone debian-10 debian10-tor
 
 1. In dom0, create a proxy vm, disable unnecessary services, and enable 3isec-tor
 
@@ -53,7 +54,7 @@ Installation
         qvm-service torvm -e 3isec-tor
           
         # if you  created a new template in the previous step
-        qvm-prefs torvm template deb9-tor
+        qvm-prefs torvm template debian10-tor
 
 2. Set prefs of torvm to use your default netvm or firewallvm as its NetVM
 
@@ -90,7 +91,7 @@ Installation
 
         [user@torvm] $ sudo grep Tor /var/log/messages
 
-3. Open arm, and look at messages and circuits
+3. Open nyx, and look at messages and circuits
 
 4. Restart the 3isec-tor service (and repeat 1-2)
 
