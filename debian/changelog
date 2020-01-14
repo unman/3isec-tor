@@ -1,3 +1,9 @@
+3isec-tor (0.1.6-1) buster; urgency=medium
+
+  * Update to nftables
+
+ -- unman <unman@thirdeyesecurity.org>  Wed, 02 Oct 2019 23:51:55 +0000
+
 3isec-tor (0.1.5-1) stretch; urgency=medium
 
   * Use TLS for Tor repository
