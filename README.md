@@ -30,9 +30,11 @@ See [this article](http://theinvisiblethings.blogspot.com/2011/09/playing-with-q
 
 4. TorVM is integrated with the Qubes firewall.
    Changes in the Qubes firewall are propogated to a filter on the PREROUTING hook.
-   DNS from clients is allowed by default, and passed through Tor. ICMP is blocked.
    The natural way to do this would have been using qubes-firewall-user-script, but in 4.0 this script only runs at qube start.
-   The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 15 secs.
+   The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 30 secs.
+   DNS from clients is allowed by default, and passed through Tor. ICMP is blocked.
+   N.B Unlike the normal Qubes Firewall, existing connections *will* be dropped when firewall changes are made.
+     There may be a delay of up to 30 s before the changes are given effect.
   
 
 Installation

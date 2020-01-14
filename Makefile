@@ -66,6 +66,7 @@ install-common:
 	install -D torrc.tpl $(DESTDIR)/usr/lib/3isec-tor/torrc.tpl
 	install -D filter.nft $(DESTDIR)/usr/lib/3isec-tor/nft/filter.nft
 	install -D nat.nft $(DESTDIR)/usr/lib/3isec-tor/nft/nat.nft
+	install -D watch_fw.sh $(DESTDIR)/usr/lib/3isec-tor/nft/watch_fw.sh
 	install -D update_nat.awk $(DESTDIR)/usr/lib/3isec-tor/nft/update_nat.awk
 	install -D update_ruleset.awk $(DESTDIR)/usr/lib/3isec-tor/nft/update_ruleset.awk
 	install -D update_nft.sh $(DESTDIR)/usr/lib/3isec-tor/nft/update_nft.sh
