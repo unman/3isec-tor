@@ -1,0 +1,16 @@
+[Unit]
+Description=Implements Qubes firewall in transparent tor proxy
+ConditionPathExists=/var/run/qubes-service/3isec-tor
+After=network.target 3isec-tor.service
+Requires=3isec-tor.service
+
+[Service]
+Type=simple
+PIDFile=/run/tor/3isec-watcher.pid
+RemainAfterExit=yes
+ExecStart=/usr/lib/3isec-tor/nft/watch_fw.sh
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
+
