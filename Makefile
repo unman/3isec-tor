@@ -73,6 +73,7 @@ install-common:
 	install -D README.md $(DESTDIR)/usr/lib/3isec-tor/README
 	install -D 99-3isec-tor-hook.rules $(DESTDIR)/etc/udev/rules.d/99-3isec-tor-hook.rules
 	install -D 3isec-tor.service $(DESTDIR)/lib/systemd/system/3isec-tor.service 
+	install -D 3isec-watcher.service $(DESTDIR)/lib/systemd/system/3isec-watcher.service 
 
 install-rh: install-common
 	install -D torproject.repo $(DESTDIR)/etc/yum.repos.d/torproject.repo

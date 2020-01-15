@@ -40,7 +40,7 @@ case "${1}" in
         systemctl stop systemd-timesyncd.service
         systemctl disable systemd-timesyncd.service
         systemctl mask systemd-timesyncd.service
-        echo deb http://deb.torproject.org/torproject.org stretch main > /etc/apt/sources.list.d/tor.list
+        echo deb http://deb.torproject.org/torproject.org buster main > /etc/apt/sources.list.d/tor.list
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

@@ -14,7 +14,7 @@ export DESTDIR=$(shell readlink -m .)/debian/3isec-tor
 
 override_dh_auto_install:
 	make install-deb
-	sed -i "s/stretch/$(DIST)/" $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
+	sed -i "s/buster/$(DIST)/" $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
 
 override_dh_systemd_start:
 	dh_systemd_start --no-restart-on-upgrade
