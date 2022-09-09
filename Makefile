@@ -80,5 +80,5 @@ install-rh: install-common
 	install -D RPM-GPG-KEY-torproject.org.asc $(DESTDIR)/etc/pki/rpm-gpg/RPM-GPG-KEY-torproject.org.asc
 
 install-deb: install-common
-	install -D torproject.list $(DESTDIR)/etc/apt/sources.lists.d/torproject.list
-	install -D torprojectarchive.asc $(DESTDIR)/usr/lib/3isec-tor/torprojectarchive.asc
+	install -D torproject.list $(DESTDIR)/etc/apt/sources.list.d/torproject.list
+	install -D tor-archive-keyring.gpg  $(DESTDIR)/usr/lib/3isec-tor/tor-archive-keyring.gpg

@@ -2,13 +2,13 @@ Source: 3isec-tor
 Section: admin
 Priority: extra
 Maintainer: unman <unman@thirdeyesecurity.org>
-Build-Depends: debhelper (>= 9~), quilt, dh-systemd (>= 1.5)
+Build-Depends: debhelper (>= 9~), quilt
 Standards-Version: 3.9.5
 Homepage: http://www.qubes-os.org
 
 Package: 3isec-tor
 Section: admin
 Architecture: any
-Depends: systemd, tor (>= 0.3.5), nyx(>=2.1.0),qubes-core-agent-networking(>=4.0.45), nftables(>=0.9.0), gnupg, ${misc:Depends}
+Depends: systemd, tor (>= 0.4.5), nyx(>=2.1.0),qubes-core-agent-networking(>=4.1.35), nftables(>=0.9.8), gnupg, ${misc:Depends}
 Conflicts: qubes-tor
 Description: A package for running a TorVM in Qubes

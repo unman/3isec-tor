@@ -23,24 +23,15 @@ set -e
 case "${1}" in
     configure)
         # Add tor key
-        key="/usr/lib/3isec-tor/torprojectarchive.asc"
-        apt-key add "$key"
-
-        # XXX: How to update index during install so we can install
-        #      keyring during  postinst?
-        #      Can't include as a depend either since repo is not instlled yet
-        # Update repos
-        # apt-get --yes update
-
-        # Install tor keyring
-        # apt-get --yes install deb.torproject.org-keyring
+        key="/usr/lib/3isec-tor/tor-archive-keyring.gpg"
+        mkdir -p /usr/share/keyrings/tor
+        cp "$key" /usr/share/keyrings/tor
 
         # qubes-tor start_tor_proxy.sh starts tor
         systemctl disable tor
         systemctl stop systemd-timesyncd.service
         systemctl disable systemd-timesyncd.service
         systemctl mask systemd-timesyncd.service
-        echo deb http://deb.torproject.org/torproject.org buster main > /etc/apt/sources.list.d/tor.list
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

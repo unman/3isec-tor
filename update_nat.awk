@@ -4,6 +4,7 @@
   nextfile
 }}
 {{sub(/priority 0/,"priority -200" )}}
+{{sub(/priority filter/,"priority -200" )}}
 /tcp dport domain/{next}
 {{sub(/.*10.*udp dport domain/,"udp dport domain" )}}
 /icmp accept/{next}
