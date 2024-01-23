@@ -1,0 +1,7 @@
+table ip qubes-prerouting-firewall {
+	chain forward {
+		type filter hook prerouting priority -200; policy drop;
+		iifname != "vif*" accept
+		ct state established,related accept
+	}
+}

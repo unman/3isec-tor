@@ -65,7 +65,7 @@ if [ -f /proc/net/if_inet6 ]; then
         echo "1" > $iface
     done
 fi
-    nft -f $DEFAULT_DIR/nft/filter.nft
+    nft -f $DEFAULT_DIR/nft/filter_ip4.nft
 
 }
 
@@ -123,4 +123,4 @@ fi
 
 # if we get here tor is running
 setup_firewall
-nft -f $DEFAULT_DIR/nft/nat.nft
+nft -f $DEFAULT_DIR/nft/newtable.nft
