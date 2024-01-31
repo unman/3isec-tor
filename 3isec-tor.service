@@ -8,7 +8,7 @@ Type=forking
 PIDFile=/var/run/tor/3isec-tor.pid
 RemainAfterExit=no
 ExecStart=/usr/lib/3isec-tor/start_tor_proxy.sh
-StandardOutput=syslog
+StandardOutput=journal
 
 [Install]
 WantedBy=multi-user.target

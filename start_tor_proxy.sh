@@ -117,10 +117,10 @@ fi
     $USER_RC_OPTION \
     --user $TOR_USER \
     --RunAsDaemon 1 \
-    --Log "notice syslog" \
     --PIDFile $PID \
     || exit_error "Error starting Tor!"
 
 # if we get here tor is running
 setup_firewall
 nft -f $DEFAULT_DIR/nft/newtable.nft
+echo "nameserver $QUBES_IP" > /etc/resolv.conf

@@ -1,4 +1,4 @@
-#!/usr/bin/sed -f 
+#!/bin/sed -f 
 1 i flush table qubes-prerouting-firewall 
 s/qubes-firewall/qubes-prerouting-firewall/
 s/hook forward priority filter/hook prerouting priority -200/

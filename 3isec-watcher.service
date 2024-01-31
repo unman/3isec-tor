@@ -9,7 +9,7 @@ Type=simple
 PIDFile=/run/tor/3isec-watcher.pid
 RemainAfterExit=yes
 ExecStart=/usr/lib/3isec-tor/nft/watch_fw.sh
-StandardOutput=syslog
+StandardOutput=journal
 
 [Install]
 WantedBy=multi-user.target
