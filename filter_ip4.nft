@@ -1,0 +1,43 @@
+#!/usr/sbin/nft -f
+
+add chain ip qubes output { type filter hook output priority 0; policy drop; }
+add chain ip qubes prerouting_nat { type nat hook prerouting priority -100; policy drop; }
+
+flush chain qubes custom-input
+flush chain qubes dnat-dns
+flush chain qubes forward
+flush chain qubes output
+flush chain qubes prerouting_nat
+
+
+table ip qubes {
+	chain custom-input {
+		iifname "vif*" udp dport domain accept
+		iifname "vif*" tcp dport 9040 accept
+		iifname "vif*" tcp dport 9050 accept
+		iifname "vif*" tcp dport 9049 accept
+		iifname "vif*" ip protocol udp drop
+	}
+
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+	}
+
+	chain output {
+		type filter hook output priority 0; policy drop;
+		ct state invalid drop
+		oifname != "lo" ip saddr != 127.0.0.1 ip daddr != 127.0.0.1 tcp flags & (rst | ack) == rst | ack drop
+		meta l4proto tcp skuid "debian-tor" accept
+		ct state established accept
+		oifname "lo" accept
+	}
+
+	chain prerouting_nat {
+		type nat hook prerouting priority -100; policy drop;
+		iifname "vif*" meta l4proto udp udp dport 53 redirect to 53
+		iifname "vif*" meta l4proto tcp tcp dport 9049 redirect to 9049
+		iifname "vif*" meta l4proto tcp tcp dport 9050 redirect to 9050
+		iifname "vif*" meta l4proto tcp redirect to 9040
+	}
+
+}
