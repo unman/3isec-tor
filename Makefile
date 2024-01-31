@@ -64,14 +64,13 @@ update-repo-unstable:
 install-common:
 	install -D start_tor_proxy.sh $(DESTDIR)/usr/lib/3isec-tor/start_tor_proxy.sh
 	install -D torrc.tpl $(DESTDIR)/usr/lib/3isec-tor/torrc.tpl
-	install -D filter.nft $(DESTDIR)/usr/lib/3isec-tor/nft/filter.nft
-	install -D nat.nft $(DESTDIR)/usr/lib/3isec-tor/nft/nat.nft
+	install -D newtable.nft $(DESTDIR)/usr/lib/3isec-tor/nft/newtable.nft
+	install -D filter_ip4.nft $(DESTDIR)/usr/lib/3isec-tor/nft/filter_ip4.nft
 	install -D watch_fw.sh $(DESTDIR)/usr/lib/3isec-tor/nft/watch_fw.sh
-	install -D update_nat.awk $(DESTDIR)/usr/lib/3isec-tor/nft/update_nat.awk
-	install -D update_ruleset.awk $(DESTDIR)/usr/lib/3isec-tor/nft/update_ruleset.awk
+	install -D update_fw.sed $(DESTDIR)/usr/lib/3isec-tor/nft/update_fw.sed
 	install -D update_nft.sh $(DESTDIR)/usr/lib/3isec-tor/nft/update_nft.sh
 	install -D README.md $(DESTDIR)/usr/lib/3isec-tor/README
-	install -D 99-3isec-tor-hook.rules $(DESTDIR)/etc/udev/rules.d/99-3isec-tor-hook.rules
+	install -D 99-3isec-tor-hook.rules $(DESTDIR)/lib/udev/rules.d/99-3isec-tor-hook.rules
 	install -D 3isec-tor.service $(DESTDIR)/lib/systemd/system/3isec-tor.service 
 	install -D 3isec-watcher.service $(DESTDIR)/lib/systemd/system/3isec-watcher.service 
 

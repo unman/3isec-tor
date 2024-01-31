@@ -35,7 +35,7 @@ URL:		http://www.qubes-os.org
 
 Requires:	systemd
 Requires:       qubes-tor-repo
-Requires:       tor >= 0.2.3
+Requires:       tor >= 0.4.7
 
 Obsoletes:  qubes-tor-init
 

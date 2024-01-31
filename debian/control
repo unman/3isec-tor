@@ -1,6 +1,6 @@
 Source: 3isec-tor
 Section: admin
-Priority: extra
+Priority: optional
 Maintainer: unman <unman@thirdeyesecurity.org>
 Build-Depends: debhelper (>= 9~), quilt
 Standards-Version: 3.9.5
@@ -11,4 +11,5 @@ Section: admin
 Architecture: any
 Depends: systemd, tor (>= 0.4.5), nyx(>=2.1.0),qubes-core-agent-networking(>=4.1.35), nftables(>=0.9.8), gnupg, ${misc:Depends}
 Conflicts: qubes-tor
-Description: A package for running a TorVM in Qubes
+Description:Package for running a TorVM in Qubes
+ This provides a transparent Tor proxy integrated with Qubes firewalling.

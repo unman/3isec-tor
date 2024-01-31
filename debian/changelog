@@ -1,10 +1,17 @@
+3isec-tor (0.2.0-1) bullseye; urgency=medium
+
+  * Update to full nftables for Qubes 4.2
+  * Bookworm build
+
+ -- unman <unman@thirdeyesecurity.org>  Wed, 24 Jan 2024 01:11:55 +0000
+
 3isec-tor (0.1.7-1) bullseye; urgency=medium
 
   * Update Tor project key and key placement
   * Bullseye build
   * Fix typos
 
- -- unman <unman@thirdeyesecurity.org>  Wed, 07 Oct 2022 15:51:55 +0000
+ -- unman <unman@thirdeyesecurity.org>  Fri, 07 Oct 2022 15:51:55 +0000
 
 3isec-tor (0.1.6-1) buster; urgency=medium
 
