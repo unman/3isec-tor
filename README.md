@@ -30,11 +30,11 @@ See [this article](http://theinvisiblethings.blogspot.com/2011/09/playing-with-q
 
 4. TorVM is integrated with the Qubes firewall.
    Changes in the Qubes firewall are propogated to a filter on the PREROUTING hook.
-   The natural way to do this would have been using qubes-firewall-user-script, but in 4.0 this script only runs at qube start.
+   The natural way to do this would have been using qubes-firewall-user-script, but in 4.2 this script only runs at qube start.
    The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 30 secs.
    DNS from clients is allowed by default, and passed through Tor. ICMP is blocked.
    N.B Unlike the normal Qubes Firewall, existing connections *will* be dropped when firewall changes are made.
-     There may be a delay of up to 30 s before the changes are given effect.
+     There may be a delay of up to 30s before the changes are given effect.
   
 
 Installation
@@ -43,7 +43,7 @@ Installation
 
 0. *(Optional)* If you want to use a separate vm template for your TorVM
 
-        qvm-clone debian-10 debian10-tor
+        qvm-clone debian-12 debian12-tor
 
 1. In dom0, create a proxy vm, disable unnecessary services, and enable 3isec-tor
 
@@ -54,28 +54,30 @@ Installation
         qvm-service torvm -e 3isec-tor
           
         # if you  created a new template in the previous step
-        qvm-prefs torvm template debian10-tor
+        qvm-prefs torvm template debian12-tor
 
 2. Set prefs of torvm to use your default netvm or firewallvm as its NetVM
 
-3. In the template, add the 3isec repositories:
+3. In the template, add the 3isec repository definition in `/etc/apt/sources.list.d/3isec.list`:
 
-        sudo echo "deb https://qubes.3isec.org/4.0 stretch main
+        "deb [signed-by=/usr/share/keyrings/unman-keyring.gpg] https://qubes.3isec.org/4.2 bookworm main"
 
-4. In the template, install the 3isec-tor package
+4. Get a copy of my signing key, and install it in `/usr/share/keyrings/unman-keyring.gpg` - instructions [here](https://qubes.3isec.org/).
+
+5. In the template, install the 3isec-tor package
 
         sudo apt install 3isec-tor
 
-5. Shutdown the template.
+6. Shutdown the template.
 
-6. Configure a qube to use torvm as its netvm (e.g using a qube named anon-web)
+7. Configure a qube to use torvm as its netvm (e.g using a qube named anon-web)
 
         qvm-prefs anon-web netvm torvm
         ... repeat for other qubes ...
 
-7. Start torvm and any qube configured to use it.
+8. Start torvm and any qube configured to use it.
 
-8. From the qube, verify torified connectivity
+9. From the qube, verify torified connectivity
 
         w3m https://check.torproject.org
 
