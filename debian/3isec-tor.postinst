@@ -29,9 +29,13 @@ case "${1}" in
 
         # qubes-tor start_tor_proxy.sh starts tor
         systemctl disable tor
-        systemctl stop systemd-timesyncd.service
-        systemctl disable systemd-timesyncd.service
-        systemctl mask systemd-timesyncd.service
+        if systemctl is-active --quiet systemd-timesyncd.service; then
+          systemctl stop systemd-timesyncd.service
+        fi
+        if systemctl list-unit-files --type=service| grep -q systemd-timesyncd.service; then
+          systemctl disable systemd-timesyncd.service
+          systemctl mask systemd-timesyncd.service
+        fi
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

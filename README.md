@@ -30,11 +30,11 @@ See [this article](http://theinvisiblethings.blogspot.com/2011/09/playing-with-q
 
 4. TorVM is integrated with the Qubes firewall.
    Changes in the Qubes firewall are propogated to a filter on the PREROUTING hook.
-   The natural way to do this would have been using qubes-firewall-user-script, but in 4.2 this script only runs at qube start.
-   The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 30 secs.
+   The natural way to do this would have been using qubes-firewall-user-script, but in 4.3 this script only runs at qube start.
+   The solution is to check for changes in the qubes-firewall table, and write them in to the nat table: the check runs every 10 secs.
    DNS from clients is allowed by default, and passed through Tor. ICMP is blocked.
    N.B Unlike the normal Qubes Firewall, existing connections *will* be dropped when firewall changes are made.
-     There may be a delay of up to 30s before the changes are given effect.
+     There may be a delay of up to 10s before the changes are given effect.
   
 
 Installation
@@ -43,7 +43,7 @@ Installation
 
 0. *(Optional)* If you want to use a separate vm template for your TorVM
 
-        qvm-clone debian-12 debian12-tor
+        qvm-clone debian-13 debian13-tor
 
 1. In dom0, create a proxy vm, disable unnecessary services, and enable 3isec-tor
 
@@ -54,13 +54,13 @@ Installation
         qvm-service torvm -e 3isec-tor
           
         # if you  created a new template in the previous step
-        qvm-prefs torvm template debian12-tor
+        qvm-prefs torvm template debian13-tor
 
 2. Set prefs of torvm to use your default netvm or firewallvm as its NetVM
 
 3. In the template, add the 3isec repository definition in `/etc/apt/sources.list.d/3isec.list`:
 
-        "deb [signed-by=/usr/share/keyrings/unman-keyring.gpg] https://qubes.3isec.org/4.2 bookworm main"
+        "deb [signed-by=/usr/share/keyrings/unman-keyring.gpg] https://qubes.3isec.org/4.3 trixie main"
 
 4. Get a copy of my signing key, and install it in `/usr/share/keyrings/unman-keyring.gpg` - instructions [here](https://qubes.3isec.org/).
 
@@ -230,7 +230,7 @@ Acknowledgments
 All credit to the contributors to that project.
 
 [stream-isolation]: https://gitweb.torproject.org/torspec.git/blob/HEAD:/proposals/171-separate-streams.txt
-[stream-isolation-explained]: https://lists.torproject.org/pipermail/tor-talk/2012-May/024403.html
+[stream-isolation-explained]: https://lists.torproject.org/pipermail/tor-talk/2013-May/024403.html
 [tor-threats]: https://www.torproject.org/projects/torbrowser/design/#adversary
 [qubes-net]: https://theinvisiblethings.blogsplot.com/2011/09/playing-with-qubes-networking-for-fun.html
 [dns]: https://tails.boum.org/todo/support_arbitrary_dns_queries/

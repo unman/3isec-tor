@@ -1,3 +1,11 @@
+3isec-tor (0.3.0) trixie; urgency=medium
+
+  * Trixie build
+  * Qubes restricts fw application to ONLY defined dns servers - we capture ALL port 53 traffic.
+  * fix postinst for case where timesync service is not running or not installed. 
+
+ -- unman <unman@thirdeyesecurity.org>  Sat, 31 Jan 2026 21:18:00 +0000
+
 3isec-tor (0.2.0-1) bullseye; urgency=medium
 
   * Update to full nftables for Qubes 4.2

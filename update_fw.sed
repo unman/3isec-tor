@@ -12,3 +12,4 @@ s/established,related/established/
 /10.139.1.1-10.139.1.2/ d
 /protocol icmp accept/ d
 /reject with icmp admin-prohibited/ d
+s/\(.*\)ip daddr .* \(.* dport 53\)/\1\2/
